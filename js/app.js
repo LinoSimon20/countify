@@ -1,6 +1,7 @@
 import {
   getCurrentSession,
   isCurrentUserAdmin,
+  sendPasswordRecoveryEmail,
   signIn,
   signOut,
   signUp,
@@ -174,6 +175,30 @@ async function handleAuthSubmit(event) {
   }
 }
 
+async function handlePasswordRecovery(event) {
+  event.preventDefault();
+
+  const email = elements.email.value.trim();
+
+  if (!email) {
+    showToast("Enter your email address first.");
+    return;
+  }
+
+  try {
+    await sendPasswordRecoveryEmail({
+      email,
+      redirectTo: window.location.origin + window.location.pathname
+    });
+
+    closeAuthDialog();
+
+    showToast("Check your email for the password reset link.");
+  } catch (error) {
+    showToast(getErrorMessage(error));
+  }
+}
+
 async function handlePasswordSubmit(event) {
   event.preventDefault();
 
@@ -305,6 +330,11 @@ function bindInterfaceEvents() {
     state.isSignUp = !state.isSignUp;
     setAuthMode(state.isSignUp);
   });
+
+  elements.forgotPassword.addEventListener(
+    "click",
+    handlePasswordRecovery
+  );
 
   elements.proposeButton.addEventListener("click", () => {
     if (!state.session) {

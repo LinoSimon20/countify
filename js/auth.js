@@ -73,3 +73,17 @@ export async function updatePassword(password) {
     throw error;
   }
 }
+
+export async function sendPasswordRecoveryEmail({
+  email,
+  redirectTo
+}) {
+  const { error } = await supabase.auth.resetPasswordForEmail(
+    email,
+    { redirectTo }
+  );
+
+  if (error) {
+    throw error;
+  }
+}

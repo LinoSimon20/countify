@@ -12,6 +12,7 @@ export const elements = {
   mySection: document.querySelector("#mySection"),
   proposeButton: document.querySelector("#proposeButton"),
   switchAuth: document.querySelector("#switchAuth"),
+  forgotPassword: document.querySelector("#forgotPassword"),
   toast: document.querySelector("#toast"),
   userLabel: document.querySelector("#userLabel"),
   adminEvents: document.querySelector("#adminEvents"),
