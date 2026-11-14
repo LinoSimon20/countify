@@ -83,7 +83,7 @@ export function renderFeaturedEvent(event) {
 export function renderPublicEvents(events) {
   if (!events.length) {
     elements.events.innerHTML = `
-      <div class="empty">There are no more published events yet.</div>
+      <div class="empty">No hay mas eventos publicados.</div>
     `;
 
     return;
@@ -97,7 +97,7 @@ export function renderPublicEvents(events) {
 export function renderUserProposals(events) {
   elements.myEvents.innerHTML = events.length
     ? events.map((event) => createEventCard(event, true)).join("")
-    : `<div class="empty">You do not have pending proposals.</div>`;
+    : `<div class="empty">No tienes propuestas pendientes.</div>`;
 }
 
 export function renderAdminEvents(events) {
