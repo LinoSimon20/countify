@@ -62,12 +62,55 @@
       <h2 id="authTitle">Entrar a Countify</h2>
       <p id="authHint" class="hint">Ingresa con tu cuenta.</p>
 
+      <div id="profileFields" hidden>
+        <label for="firstName">Nombre</label>
+        <input
+          id="firstName"
+          type="text"
+          maxlength="80"
+          autocomplete="given-name"
+        >
+
+        <label for="lastName">Apellido</label>
+        <input
+          id="lastName"
+          type="text"
+          maxlength="80"
+          autocomplete="family-name"
+        >
+
+        <label for="username">Usuario</label>
+        <input
+          id="username"
+          type="text"
+          minlength="3"
+          maxlength="30"
+          autocomplete="username"
+          pattern="[a-z0-9_]{3,30}"
+          placeholder="ejemplo_usuario"
+        >
+
+        <p id="usernameStatus" class="hint" aria-live="polite"></p>
+      </div>
+
       <label for="email">Correo electrónico</label>
       <input id="email" type="email" required autocomplete="email">
 
       <label for="password">Contraseña</label>
       <input id="password" type="password" required minlength="6"
              autocomplete="current-password">
+      <div id="confirmPasswordField" hidden>
+        <label for="confirmSignUpPassword">
+          Confirma tu contraseña
+        </label>
+
+        <input
+          id="confirmSignUpPassword"
+          type="password"
+          minlength="6"
+          autocomplete="new-password"
+        >
+      </div>
 
       <div class="modal-actions">
         <button type="button" class="btn btn-light"
@@ -81,7 +124,7 @@
         ¿No tienes cuenta?
         <a href="#" id="switchAuth">Crear una cuenta</a>
       </p>
-      
+
       <p class="hint">
         <a href="#" id="forgotPassword">¿Olvidaste tu contraseña?</a>
       </p>

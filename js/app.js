@@ -37,6 +37,12 @@ import {
 } from "./event-view.js";
 
 import {
+  isUsernameAvailable,
+  isValidUsername,
+  normalizeUsername
+} from "./profiles.js";
+
+import {
   closeAuthDialog,
   closeEventDialog,
   closePasswordDialog,
@@ -55,7 +61,8 @@ const state = {
   events: [],
   isAdmin: false,
   isSignUp: false,
-  session: null
+  session: null,
+  usernameCheckTimer: null
 };
 
 function getErrorMessage(error) {
@@ -81,6 +88,50 @@ function isPasswordSetupUrl() {
 function showPasswordDialog() {
   if (!elements.passwordDialog.open) {
     openPasswordDialog();
+  }
+}
+
+function setUsernameStatus(message) {
+  elements.usernameStatus.textContent = message;
+}
+
+async function validateUsernameAvailability() {
+  const username = normalizeUsername(elements.username.value);
+
+  elements.username.value = username;
+
+  if (!username) {
+    setUsernameStatus("");
+    return false;
+  }
+
+  if (!isValidUsername(username)) {
+    setUsernameStatus(
+      "Usa de 3 a 30 caracteres: minúsculas, números o guion bajo."
+    );
+
+    return false;
+  }
+
+  setUsernameStatus("Comprobando disponibilidad...");
+
+  try {
+    const available = await isUsernameAvailable(username);
+
+    if (normalizeUsername(elements.username.value) !== username) {
+      return false;
+    }
+
+    setUsernameStatus(
+      available
+        ? "Usuario disponible."
+        : "Ese usuario ya está en uso."
+    );
+
+    return available;
+  } catch (error) {
+    setUsernameStatus("No se pudo comprobar el usuario.");
+    return false;
   }
 }
 
@@ -157,18 +208,44 @@ async function handleAuthSubmit(event) {
 
   try {
     if (state.isSignUp) {
+      const firstName = elements.firstName.value.trim();
+      const lastName = elements.lastName.value.trim();
+      const username = normalizeUsername(elements.username.value);
+      const confirmation = elements.confirmSignUpPassword.value;
+
+      if (!firstName || !lastName || !username) {
+        showToast("Completa todos los datos de tu perfil.");
+        return;
+      }
+
+      if (credentials.password !== confirmation) {
+        showToast("Las contraseñas no coinciden.");
+        return;
+      }
+
+      const isAvailable = await validateUsernameAvailability();
+
+      if (!isAvailable) {
+        showToast("Elige otro nombre de usuario.");
+        return;
+      }
+
       await signUp({
         ...credentials,
+        firstName,
+        lastName,
+        username,
         redirectTo: window.location.origin + window.location.pathname
       });
 
-      showToast("Check your email to confirm your account.");
+      showToast("Revisa tu correo para confirmar tu cuenta.");
     } else {
       await signIn(credentials);
-      showToast("Welcome to Countify.");
+      showToast("Bienvenido a Countify.");
     }
 
     elements.authForm.reset();
+    setUsernameStatus("");
     closeAuthDialog();
   } catch (error) {
     showToast(getErrorMessage(error));
@@ -331,6 +408,22 @@ function bindInterfaceEvents() {
     setAuthMode(state.isSignUp);
   });
 
+  elements.username.addEventListener("input", () => {
+    if (!state.isSignUp) {
+      return;
+    }
+
+    window.clearTimeout(state.usernameCheckTimer);
+
+    elements.username.value = normalizeUsername(
+      elements.username.value
+    );
+
+    state.usernameCheckTimer = window.setTimeout(() => {
+      validateUsernameAvailability();
+    }, 400);
+  });
+
   elements.forgotPassword.addEventListener(
     "click",
     handlePasswordRecovery
@@ -348,10 +441,10 @@ function bindInterfaceEvents() {
     openEventDialog();
   });
 
-    elements.authForm.addEventListener("submit", handleAuthSubmit);
-    elements.passwordForm.addEventListener("submit", handlePasswordSubmit);
-    elements.eventForm.addEventListener("submit", handleEventSubmit);
-    elements.adminEvents.addEventListener("click", handleAdminAction);
+  elements.authForm.addEventListener("submit", handleAuthSubmit);
+  elements.passwordForm.addEventListener("submit", handlePasswordSubmit);
+  elements.eventForm.addEventListener("submit", handleEventSubmit);
+  elements.adminEvents.addEventListener("click", handleAdminAction);
 }
 
 function watchApplicationChanges() {

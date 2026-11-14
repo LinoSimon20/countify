@@ -27,13 +27,21 @@ export async function signIn({ email, password }) {
 export async function signUp({
   email,
   password,
+  firstName,
+  lastName,
+  username,
   redirectTo
 }) {
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: redirectTo
+      emailRedirectTo: redirectTo,
+      data: {
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        username
+      }
     }
   });
 

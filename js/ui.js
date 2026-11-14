@@ -19,6 +19,13 @@ export const elements = {
   adminPanel: document.querySelector("#adminPanel"),
   email: document.querySelector("#email"),
   password: document.querySelector("#password"),
+  profileFields: document.querySelector("#profileFields"),
+  firstName: document.querySelector("#firstName"),
+  lastName: document.querySelector("#lastName"),
+  username: document.querySelector("#username"),
+  usernameStatus: document.querySelector("#usernameStatus"),
+  confirmPasswordField: document.querySelector("#confirmPasswordField"),
+  confirmSignUpPassword: document.querySelector("#confirmSignUpPassword"),
   eventTitle: document.querySelector("#eventTitle"),
   eventDate: document.querySelector("#eventDate"),
   eventDescription: document.querySelector("#eventDescription"),
@@ -63,16 +70,36 @@ export function closePasswordDialog() {
 
 export function setAuthMode(isSignUp) {
   elements.authTitle.textContent = isSignUp
-    ? "Create an account"
-    : "Sign in to Countify";
+    ? "Crear una cuenta"
+    : "Entrar a Countify";
 
   elements.authHint.textContent = isSignUp
-    ? "We will send an email so you can confirm your account."
-    : "Sign in with your Countify account.";
+    ? "Completa tus datos para crear tu cuenta."
+    : "Ingresa con tu cuenta.";
 
   elements.switchAuth.textContent = isSignUp
-    ? "I already have an account"
-    : "Create an account";
+    ? "Ya tengo una cuenta"
+    : "Crear una cuenta";
+
+  elements.profileFields.hidden = !isSignUp;
+  elements.confirmPasswordField.hidden = !isSignUp;
+
+  elements.firstName.required = isSignUp;
+  elements.lastName.required = isSignUp;
+  elements.username.required = isSignUp;
+  elements.confirmSignUpPassword.required = isSignUp;
+
+  elements.password.autocomplete = isSignUp
+    ? "new-password"
+    : "current-password";
+
+  const submitButton = elements.authForm.querySelector(
+    'button[type="submit"]'
+  );
+
+  submitButton.textContent = isSignUp
+    ? "Crear cuenta"
+    : "Entrar";
 }
 
 export function setUserInterface(session) {
