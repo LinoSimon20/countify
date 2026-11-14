@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Countify — Cada fecha cuenta</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <nav class="wrap">
+      <a class="brand" href="./">count<span>ify</span></a>
+
+      <div class="actions">
+        <span id="userLabel" class="user-label"></span>
+        <button id="proposeButton" class="btn btn-light">Proponer evento</button>
+        <button id="authButton" class="btn btn-primary">Entrar</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Tu tiempo, visible</div>
+      <h1>Cuenta los días que importan.</h1>
+      <p class="lead">
+        Descubre próximos momentos y propone los tuyos.
+        Las propuestas se revisan antes de publicarse.
+      </p>
+    </section>
+
+    <section>
+      <h2>Evento destacado</h2>
+      <div id="featured" class="featured">
+        <div>
+          <div class="eyebrow featured-label">Próximamente</div>
+          <h2>Aún no hay un evento destacado</h2>
+          <p>La primera fecha aprobada aparecerá aquí.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Próximos eventos</h2>
+      <div id="events" class="grid"></div>
+    </section>
+
+    <section id="mySection" hidden>
+      <h2>Mis propuestas</h2>
+      <div id="myEvents" class="grid"></div>
+    </section>
+
+    <section id="adminPanel" class="admin">
+      <div class="eyebrow admin-label">Administración</div>
+      <h2>Revisar eventos</h2>
+      <div id="adminEvents"></div>
+    </section>
+  </main>
+
+  <dialog id="authDialog">
+    <form id="authForm" class="modal">
+      <h2 id="authTitle">Entrar a Countify</h2>
+      <p id="authHint" class="hint">Ingresa con tu cuenta.</p>
+
+      <label for="email">Correo electrónico</label>
+      <input id="email" type="email" required autocomplete="email">
+
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" required minlength="6"
+             autocomplete="current-password">
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-light"
+                onclick="document.querySelector('#authDialog').close()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary">Entrar</button>
+      </div>
+
+      <p class="hint">
+        ¿No tienes cuenta?
+        <a href="#" id="switchAuth">Crear una cuenta</a>
+      </p>
+    </form>
+  </dialog>
+
+  <dialog id="eventDialog">
+    <form id="eventForm" class="modal">
+      <h2>Proponer un evento</h2>
+      <p class="hint">Tu propuesta quedará pendiente hasta que sea revisada.</p>
+
+      <label for="eventTitle">Título</label>
+      <input id="eventTitle" required minlength="3" maxlength="120"
+             placeholder="Ej.: Mi próximo viaje">
+
+      <label for="eventDate">Fecha y hora</label>
+      <input id="eventDate" type="datetime-local" required>
+
+      <label for="eventDescription">
+        Descripción <span class="hint">(opcional)</span>
+      </label>
+      <textarea id="eventDescription" maxlength="500"
+                placeholder="Cuéntanos un poco sobre el evento"></textarea>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-light"
+                onclick="document.querySelector('#eventDialog').close()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary">
+          Enviar propuesta
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
