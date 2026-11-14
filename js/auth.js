@@ -63,3 +63,13 @@ export async function isCurrentUserAdmin() {
 export function watchAuthState(onChange) {
   return supabase.auth.onAuthStateChange(onChange);
 }
+
+export async function updatePassword(password) {
+  const { error } = await supabase.auth.updateUser({
+    password
+  });
+
+  if (error) {
+    throw error;
+  }
+}
