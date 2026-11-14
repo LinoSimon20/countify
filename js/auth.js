@@ -1,0 +1,97 @@
+import { supabase } from "./supabase-client.js";
+
+export async function getCurrentSession() {
+  const {
+    data: { session },
+    error
+  } = await supabase.auth.getSession();
+
+  if (error) {
+    throw error;
+  }
+
+  return session;
+}
+
+export async function signIn({ email, password }) {
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function signUp({
+  email,
+  password,
+  firstName,
+  lastName,
+  username,
+  redirectTo
+}) {
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: redirectTo,
+      data: {
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        username
+      }
+    }
+  });
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function signOut() {
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function isCurrentUserAdmin() {
+  const { data, error } = await supabase.rpc("is_admin");
+
+  if (error) {
+    throw error;
+  }
+
+  return data === true;
+}
+
+export function watchAuthState(onChange) {
+  return supabase.auth.onAuthStateChange(onChange);
+}
+
+export async function updatePassword(password) {
+  const { error } = await supabase.auth.updateUser({
+    password
+  });
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function sendPasswordRecoveryEmail({
+  email,
+  redirectTo
+}) {
+  const { error } = await supabase.auth.resetPasswordForEmail(
+    email,
+    { redirectTo }
+  );
+
+  if (error) {
+    throw error;
+  }
+}
