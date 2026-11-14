@@ -66,7 +66,7 @@ const state = {
 };
 
 function getErrorMessage(error) {
-  return error?.message || "Something went wrong. Please try again.";
+  return error?.message || "Ocurrió un error. Inténtalo de nuevo.";
 }
 
 function isPasswordSetupUrl() {
@@ -185,7 +185,7 @@ async function refreshEvents() {
     state.events = await fetchEvents();
     renderApplication();
   } catch (error) {
-    showToast(`Unable to load events: ${getErrorMessage(error)}`);
+    showToast(`No se pudieron cargar los eventos: ${getErrorMessage(error)}`);
   }
 }
 
@@ -194,7 +194,7 @@ async function refreshApplication(session) {
     await updateSessionState(session);
     await refreshEvents();
   } catch (error) {
-    showToast(`Unable to update session: ${getErrorMessage(error)}`);
+    showToast(`No se pudo actualizar la sesión: ${getErrorMessage(error)}`);
   }
 }
 
@@ -258,7 +258,7 @@ async function handlePasswordRecovery(event) {
   const email = elements.email.value.trim();
 
   if (!email) {
-    showToast("Enter your email address first.");
+    showToast("Primero escribe tu correo electrónico.");
     return;
   }
 
@@ -270,7 +270,7 @@ async function handlePasswordRecovery(event) {
 
     closeAuthDialog();
 
-    showToast("Check your email for the password reset link.");
+    showToast("Revisa tu correo para restablecer la contraseña.");
   } catch (error) {
     showToast(getErrorMessage(error));
   }
@@ -283,7 +283,7 @@ async function handlePasswordSubmit(event) {
   const confirmation = elements.confirmPassword.value;
 
   if (password !== confirmation) {
-    showToast("Passwords do not match.");
+    showToast("Las contraseñas no coinciden.");
     return;
   }
 
@@ -293,7 +293,7 @@ async function handlePasswordSubmit(event) {
     elements.passwordForm.reset();
     closePasswordDialog();
 
-    showToast("Your password was saved.");
+    showToast("Tu contraseña fue guardada.");
   } catch (error) {
     showToast(getErrorMessage(error));
   }
@@ -303,7 +303,7 @@ async function handleEventSubmit(event) {
   event.preventDefault();
 
   if (!state.session) {
-    showToast("Sign in before proposing an event.");
+    showToast("Inicia sesión antes de proponer un evento.");
     openAuthDialog();
     return;
   }
@@ -318,7 +318,7 @@ async function handleEventSubmit(event) {
 
     elements.eventForm.reset();
     closeEventDialog();
-    showToast("Your event proposal was sent for review.");
+    showToast("Tu propuesta de evento fue enviada para revisión.");
 
     await refreshEvents();
   } catch (error) {
@@ -338,22 +338,22 @@ async function handleAdminAction(event) {
   try {
     if (action === "approve") {
       await approveEvent(id);
-      showToast("Event approved.");
+      showToast("Evento aprobado.");
     }
 
     if (action === "reject") {
       await rejectEvent(id);
-      showToast("Event rejected.");
+      showToast("Evento rechazado.");
     }
 
     if (action === "feature") {
       await setFeaturedEvent(id);
-      showToast("Featured event updated.");
+      showToast("Evento destacado actualizado.");
     }
 
     if (action === "image") {
       const imagePath = window.prompt(
-        "Internal image path, for example: assets/images/event.webp"
+        "Ingresa la ruta de la imagen, por ejemplo: assets/images/event.webp"
       );
 
       if (!imagePath) {
@@ -361,20 +361,20 @@ async function handleAdminAction(event) {
       }
 
       await setEventImage(id, imagePath.trim());
-      showToast("Event image updated.");
+      showToast("Imagen del evento actualizada.");
     }
 
     if (action === "delete") {
       const confirmed = window.confirm(
-        "Do you want to permanently delete this event?"
-      );
+            "¿Estás seguro de que quieres eliminar permanentemente este evento?"
+        );
 
       if (!confirmed) {
         return;
       }
 
       await deleteEvent(id);
-      showToast("Event deleted.");
+      showToast("Evento eliminado.");
     }
 
     await refreshEvents();
@@ -388,7 +388,7 @@ function bindInterfaceEvents() {
     if (state.session) {
       try {
         await signOut();
-        showToast("You signed out.");
+        showToast("Has cerrado sesión.");
       } catch (error) {
         showToast(getErrorMessage(error));
       }
@@ -434,8 +434,8 @@ function bindInterfaceEvents() {
       state.isSignUp = false;
       setAuthMode(state.isSignUp);
       openAuthDialog();
-      showToast("Sign in before proposing an event.");
-      return;
+        showToast("Inicia sesión antes de proponer un evento.");
+        return;
     }
 
     openEventDialog();

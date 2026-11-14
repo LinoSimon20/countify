@@ -22,15 +22,15 @@ function getTimeValues(eventDate) {
 
 function renderFeaturedCountdown(element, values) {
   if (values.isFinished) {
-    element.textContent = "Finished";
+    element.textContent = "Finalizado";
     return;
   }
 
   const units = [
-    ["Days", values.days],
-    ["Hours", values.hours],
+    ["Días", values.days],
+    ["Horas", values.hours],
     ["Min", values.minutes],
-    ["Sec", values.seconds]
+    ["Seg", values.seconds]
   ];
 
   element.innerHTML = units.map(([label, value]) => `
@@ -43,7 +43,7 @@ function renderFeaturedCountdown(element, values) {
 
 function renderCompactCountdown(element, values) {
   if (values.isFinished) {
-    element.textContent = "Finished";
+    element.textContent = "Finalizado";
     return;
   }
 
