@@ -45,7 +45,7 @@ export async function setFeaturedEvent(eventId) {
 
 export async function setEventImage(eventId, imagePath) {
   if (!INTERNAL_IMAGE_PATH.test(imagePath)) {
-    throw new Error("Image paths must be inside assets/images/.");
+    throw new Error("La ruta de la imagen debe estar dentro de assets/images/.");
   }
 
   await updateEvent(eventId, {

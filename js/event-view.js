@@ -14,6 +14,16 @@ function escapeHtml(value = "") {
   });
 }
 
+function translateStatus(status) {
+  const translations = {
+    pending: "Pendiente",
+    approved: "Aprobado",
+    rejected: "Rechazado"
+  };
+
+  return translations[status] || status;
+}
+
 function getImageStyle(imagePath) {
   const validPath =
     /^assets\/images\/[\w./-]+\.(png|jpe?g|webp|gif|svg)$/i;
@@ -32,7 +42,7 @@ function createEventCard(event, showStatus = false) {
 
       <div class="card-body">
         ${showStatus
-          ? `<span class="status">${escapeHtml(event.status)}</span>`
+          ? `<span class="status">${translateStatus(event.status)}</span>`
           : ""}
 
         <h3>${escapeHtml(event.title)}</h3>
@@ -53,9 +63,9 @@ export function renderFeaturedEvent(event) {
 
     elements.featured.innerHTML = `
       <div>
-        <div class="eyebrow featured-label">Coming soon</div>
-        <h2>No featured event yet</h2>
-        <p>The first approved event will appear here.</p>
+        <div class="eyebrow featured-label">Próximamente</div>
+        <h2>Aún no hay evento destacado</h2>
+        <p>El primer evento aprobado aparecerá aquí.</p>
       </div>
     `;
 
@@ -72,7 +82,7 @@ export function renderFeaturedEvent(event) {
 
   elements.featured.innerHTML = `
     <div>
-      <div class="eyebrow featured-label">Featured event</div>
+      <div class="eyebrow featured-label">Evento destacado</div>
       <h2>${escapeHtml(event.title)}</h2>
       <p>${escapeHtml(event.description || "")}</p>
       <div class="countdown" data-date="${event.event_at}"></div>
@@ -83,7 +93,7 @@ export function renderFeaturedEvent(event) {
 export function renderPublicEvents(events) {
   if (!events.length) {
     elements.events.innerHTML = `
-      <div class="empty">No hay mas eventos publicados.</div>
+      <div class="empty">Aún no hay más eventos publicados.</div>
     `;
 
     return;
@@ -102,7 +112,7 @@ export function renderUserProposals(events) {
 
 export function renderAdminEvents(events) {
   if (!events.length) {
-    elements.adminEvents.innerHTML = "<p>No events yet.</p>";
+    elements.adminEvents.innerHTML = "<p>Aún no hay eventos.</p>";
     return;
   }
 
@@ -111,31 +121,31 @@ export function renderAdminEvents(events) {
       <div>
         <strong>${escapeHtml(event.title)}</strong>
         <p>
-          ${escapeHtml(event.description || "No description")}
-          · ${escapeHtml(event.status)}
+          ${escapeHtml(event.description || "Sin descripción")}
+          · ${translateStatus(event.status)}
         </p>
-        <p>Image: ${escapeHtml(event.image_path || "not assigned")}</p>
+        <p>Imagen: ${escapeHtml(event.image_path || "sin asignar")}</p>
       </div>
 
       <div class="admin-buttons">
         <button class="btn btn-primary" data-action="approve" data-id="${event.id}">
-          Approve
+          Aprobar
         </button>
 
         <button class="btn btn-light" data-action="feature" data-id="${event.id}">
-          Feature
+          Destacar
         </button>
 
         <button class="btn btn-light" data-action="image" data-id="${event.id}">
-          Image
+          Imagen
         </button>
 
         <button class="btn btn-danger" data-action="reject" data-id="${event.id}">
-          Reject
+          Rechazar
         </button>
 
         <button class="btn btn-danger" data-action="delete" data-id="${event.id}">
-          Delete
+          Eliminar
         </button>
       </div>
     </div>
