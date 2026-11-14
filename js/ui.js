@@ -15,7 +15,12 @@ export const elements = {
   toast: document.querySelector("#toast"),
   userLabel: document.querySelector("#userLabel"),
   adminEvents: document.querySelector("#adminEvents"),
-  adminPanel: document.querySelector("#adminPanel")
+  adminPanel: document.querySelector("#adminPanel"),
+  email: document.querySelector("#email"),
+  password: document.querySelector("#password"),
+  eventTitle: document.querySelector("#eventTitle"),
+  eventDate: document.querySelector("#eventDate"),
+  eventDescription: document.querySelector("#eventDescription")
 };
 
 export function showToast(message) {
