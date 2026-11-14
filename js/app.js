@@ -4,6 +4,7 @@ import {
   signIn,
   signOut,
   signUp,
+  updatePassword,
   watchAuthState
 } from "./auth.js";
 
@@ -37,9 +38,11 @@ import {
 import {
   closeAuthDialog,
   closeEventDialog,
+  closePasswordDialog,
   elements,
   openAuthDialog,
   openEventDialog,
+  openPasswordDialog,
   setAuthMode,
   setUserInterface,
   showToast,
@@ -56,6 +59,28 @@ const state = {
 
 function getErrorMessage(error) {
   return error?.message || "Something went wrong. Please try again.";
+}
+
+function isPasswordSetupUrl() {
+  const hashParameters = new URLSearchParams(
+    window.location.hash.slice(1)
+  );
+
+  const queryParameters = new URLSearchParams(
+    window.location.search
+  );
+
+  const type =
+    hashParameters.get("type") ||
+    queryParameters.get("type");
+
+  return type === "invite" || type === "recovery";
+}
+
+function showPasswordDialog() {
+  if (!elements.passwordDialog.open) {
+    openPasswordDialog();
+  }
 }
 
 async function updateSessionState(session) {
@@ -144,6 +169,29 @@ async function handleAuthSubmit(event) {
 
     elements.authForm.reset();
     closeAuthDialog();
+  } catch (error) {
+    showToast(getErrorMessage(error));
+  }
+}
+
+async function handlePasswordSubmit(event) {
+  event.preventDefault();
+
+  const password = elements.newPassword.value;
+  const confirmation = elements.confirmPassword.value;
+
+  if (password !== confirmation) {
+    showToast("Passwords do not match.");
+    return;
+  }
+
+  try {
+    await updatePassword(password);
+
+    elements.passwordForm.reset();
+    closePasswordDialog();
+
+    showToast("Your password was saved.");
   } catch (error) {
     showToast(getErrorMessage(error));
   }
@@ -270,14 +318,22 @@ function bindInterfaceEvents() {
     openEventDialog();
   });
 
-  elements.authForm.addEventListener("submit", handleAuthSubmit);
-  elements.eventForm.addEventListener("submit", handleEventSubmit);
-  elements.adminEvents.addEventListener("click", handleAdminAction);
+    elements.authForm.addEventListener("submit", handleAuthSubmit);
+    elements.passwordForm.addEventListener("submit", handlePasswordSubmit);
+    elements.eventForm.addEventListener("submit", handleEventSubmit);
+    elements.adminEvents.addEventListener("click", handleAdminAction);
 }
 
 function watchApplicationChanges() {
-  watchAuthState(async (_event, session) => {
+  watchAuthState(async (event, session) => {
     await refreshApplication(session);
+
+    if (
+      event === "PASSWORD_RECOVERY" ||
+      (event === "SIGNED_IN" && isPasswordSetupUrl())
+    ) {
+      showPasswordDialog();
+    }
   });
 
   state.eventChannel = subscribeToEventChanges(refreshEvents);
@@ -288,10 +344,15 @@ async function initializeApplication() {
   bindInterfaceEvents();
   startCountdowns();
 
-  const session = await getCurrentSession();
+    const session = await getCurrentSession();
 
-  await refreshApplication(session);
-  watchApplicationChanges();
+    await refreshApplication(session);
+
+    if (session && isPasswordSetupUrl()) {
+      showPasswordDialog();
+    }
+
+    watchApplicationChanges();
 }
 
 window.addEventListener("beforeunload", () => {
