@@ -20,7 +20,11 @@ export const elements = {
   password: document.querySelector("#password"),
   eventTitle: document.querySelector("#eventTitle"),
   eventDate: document.querySelector("#eventDate"),
-  eventDescription: document.querySelector("#eventDescription")
+  eventDescription: document.querySelector("#eventDescription"),
+  passwordDialog: document.querySelector("#passwordDialog"),
+  passwordForm: document.querySelector("#passwordForm"),
+  newPassword: document.querySelector("#newPassword"),
+  confirmPassword: document.querySelector("#confirmPassword")
 };
 
 export function showToast(message) {
@@ -46,6 +50,14 @@ export function openEventDialog() {
 
 export function closeEventDialog() {
   elements.eventDialog.close();
+}
+
+export function openPasswordDialog() {
+  elements.passwordDialog.showModal();
+}
+
+export function closePasswordDialog() {
+  elements.passwordDialog.close();
 }
 
 export function setAuthMode(isSignUp) {
